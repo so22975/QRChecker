@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>物品QRチェック</title>
+<title>物品QRチェック（選択ラベル・備考対応）</title>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--ink:#17202a;--muted:#65748b;--line:#d9dee8;--brand:#1f5fbf;--danger:#b42318;--ok:#067647}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header{background:#102a43;color:white;padding:18px 16px}header h1{font-size:22px;margin:0 0 4px}main{max-width:1180px;margin:0 auto;padding:16px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px #0001}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.stack{display:grid;gap:8px}label{font-weight:700;font-size:13px}input,textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:white}button{border:0;border-radius:10px;background:var(--brand);color:white;padding:10px 13px;font-weight:700;cursor:pointer}button.secondary{background:#475569}button.light{background:#e9eef8;color:#16325c}button.danger{background:var(--danger)}button.ok{background:var(--ok)}button:disabled{opacity:.55}.muted{color:var(--muted);font-size:13px}.pill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;background:#e9eef8}.pill.ok{background:#dcfae6;color:#065f46}.pill.warn{background:#fff4cc;color:#7a5200}.tableWrap{overflow:auto;max-height:430px;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;background:#fff}th,td{border-bottom:1px solid var(--line);padding:9px;text-align:left;font-size:14px;vertical-align:top}th{position:sticky;top:0;background:#edf2f7;z-index:1}tr:hover{background:#f8fbff}.scanBox{border:2px dashed var(--line);border-radius:14px;padding:18px;text-align:center}.big{font-size:22px;font-weight:800}.qrGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.label{height:88mm;border:1px dashed #999;padding:5mm;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;break-inside:avoid;background:white}.label img.qr{width:32mm!important;height:32mm!important}.label .code{font-size:14px;font-weight:800;margin-top:3mm}.label .name{font-size:12px}.label .loc{font-size:10px;color:#444}.hide{display:none!important}@media(max-width:850px){.grid{grid-template-columns:1fr}.qrGrid{grid-template-columns:1fr 1fr}}@media print{body{background:white}header,.noPrint,.card:not(.printArea){display:none!important}main{padding:0;max-width:none}.printArea{display:block!important;border:0;box-shadow:none;margin:0;padding:0}.qrGrid{grid-template-columns:repeat(3,1fr);gap:0}.label{border:.2mm solid #ccc;height:49mm;margin:0;page-break-inside:avoid}.label img.qr{width:24mm!important;height:24mm!important}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header{background:#102a43;color:white;padding:18px 16px}header h1{font-size:22px;margin:0 0 4px}main{max-width:1180px;margin:0 auto;padding:16px}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px #0001}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.stack{display:grid;gap:8px}label{font-weight:700;font-size:13px}input,textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:white}button{border:0;border-radius:10px;background:var(--brand);color:white;padding:10px 13px;font-weight:700;cursor:pointer}button.secondary{background:#475569}button.light{background:#e9eef8;color:#16325c}button.danger{background:var(--danger)}button.ok{background:var(--ok)}button:disabled{opacity:.55}.muted{color:var(--muted);font-size:13px}.pill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;background:#e9eef8}.pill.ok{background:#dcfae6;color:#065f46}.pill.warn{background:#fff4cc;color:#7a5200}.tableWrap{overflow:auto;max-height:430px;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;background:#fff}th,td{border-bottom:1px solid var(--line);padding:9px;text-align:left;font-size:14px;vertical-align:top}th{position:sticky;top:0;background:#edf2f7;z-index:1}tr:hover{background:#f8fbff}.scanBox{border:2px dashed var(--line);border-radius:14px;padding:18px;text-align:center}.big{font-size:22px;font-weight:800}.qrGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.label{height:88mm;border:1px dashed #999;padding:5mm;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;break-inside:avoid;background:white}.label img.qr{width:32mm!important;height:32mm!important}.label .code{font-size:14px;font-weight:800;margin-top:3mm}.label .name{font-size:12px}.label .loc{font-size:10px;color:#444}.hide{display:none!important}.modalBack{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:99}.modal{background:white;border-radius:16px;padding:18px;max-width:520px;width:calc(100% - 32px);box-shadow:0 10px 30px #0005}.modal h3{margin-top:0}.checkCell{width:34px;text-align:center}@media(max-width:850px){.grid{grid-template-columns:1fr}.qrGrid{grid-template-columns:1fr 1fr}}@media print{body{background:white}header,.noPrint,.card:not(.printArea){display:none!important}main{padding:0;max-width:none}.printArea{display:block!important;border:0;box-shadow:none;margin:0;padding:0}.qrGrid{grid-template-columns:repeat(3,1fr);gap:0}.label{border:.2mm solid #ccc;height:49mm;margin:0;page-break-inside:avoid}.label img.qr{width:24mm!important;height:24mm!important}}
 </style>
 </head>
 <body>
@@ -21,8 +21,9 @@
     <div class="row" style="justify-content:center">
       <input id="checkerNameScan" placeholder="担当者名" style="max-width:220px">
       <select id="statusScan" style="max-width:120px"><option>OK</option><option>要確認</option><option>不明</option></select>
-      <input id="commentScan" placeholder="コメント" style="max-width:260px">
+      <textarea id="commentScan" placeholder="チェック時の備考（例：汚れあり、電池残量確認、異常なし等）" style="max-width:420px;min-height:48px"></textarea>
       <button class="ok" id="checkBtn">この物品をチェック済みにする</button>
+      <button class="secondary" id="uncheckBtn">未チェックに戻す</button>
     </div>
     <p class="muted">スマホで最初に使う時は、Supabase設定済みの config.js を公開先に置いてください。</p>
   </section>
@@ -48,8 +49,9 @@
 
       <section class="card">
         <h2>3. 物品一覧</h2>
-        <div class="row"><input id="search" placeholder="検索：コード・物品名・場所" style="max-width:330px"><button class="light" id="exportItemsCsv">物品CSV出力</button><button class="light" id="exportItemsXlsx">物品Excel出力</button><button class="light" id="exportLogsCsv">履歴CSV出力</button><button id="makeLabels">ラベル作成</button></div><br>
-        <div class="tableWrap"><table><thead><tr><th>コード</th><th>物品名</th><th>場所</th><th>最終確認</th><th>操作</th></tr></thead><tbody id="itemsTbody"></tbody></table></div>
+        <div class="row"><input id="search" placeholder="検索：コード・物品名・場所" style="max-width:330px"><button class="light" id="exportItemsCsv">物品CSV出力</button><button class="light" id="exportItemsXlsx">物品Excel出力</button><button class="light" id="exportLogsCsv">履歴CSV出力</button></div><br>
+        <div class="row"><button class="light" id="selectVisible">表示中を選択</button><button class="light" id="clearSelected">選択解除</button><button id="makeSelectedLabels">選択した物品をA4ラベル印刷</button><button class="secondary" id="makeLabels">表示中すべてをA4ラベル印刷</button></div><br>
+        <div class="tableWrap"><table><thead><tr><th class="checkCell">選択</th><th>コード</th><th>物品名</th><th>場所</th><th>最終確認</th><th>操作</th></tr></thead><tbody id="itemsTbody"></tbody></table></div>
       </section>
     </div>
 
@@ -60,15 +62,27 @@
       </section>
       <section class="card">
         <h2>チェック履歴</h2>
-        <div class="tableWrap"><table><thead><tr><th>日時</th><th>コード</th><th>担当</th><th>状態</th><th>コメント</th></tr></thead><tbody id="logsTbody"></tbody></table></div>
+        <div class="tableWrap"><table><thead><tr><th>日時</th><th>コード</th><th>担当</th><th>状態</th><th>備考</th></tr></thead><tbody id="logsTbody"></tbody></table></div>
       </section>
+    </div>
+  </div>
+
+  <div id="checkModalBack" class="modalBack hide noPrint">
+    <div class="modal">
+      <h3 id="checkModalTitle">チェック記録</h3>
+      <div class="stack">
+        <label>担当者名</label><input id="modalChecker" placeholder="田中">
+        <label>状態</label><select id="modalStatus"><option>OK</option><option>要確認</option><option>不明</option></select>
+        <label>チェック時の備考</label><textarea id="modalComment" placeholder="例：異常なし／汚れあり／電池交換が必要 など"></textarea>
+        <div class="row"><button class="ok" id="modalSaveCheck">チェック済みにする</button><button class="secondary" id="modalCancel">キャンセル</button></div>
+      </div>
     </div>
   </div>
 
   <section class="card printArea hide" id="labelArea"><h2 class="noPrint">QRラベル印刷</h2><div class="qrGrid" id="qrGrid"></div><div class="noPrint row" style="margin-top:14px"><button onclick="window.print()">印刷する</button><button class="secondary" onclick="document.getElementById('labelArea').classList.add('hide')">閉じる</button></div></section>
 </main>
 <script>
-let items=[], logs=[], supabaseClient=null;
+let items=[], logs=[], supabaseClient=null, selectedCodes=new Set(), modalCode=null;
 const $=id=>document.getElementById(id);
 const config=window.APP_CONFIG||{};
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -82,11 +96,19 @@ function localSave(){localStorage.items=JSON.stringify(items);localStorage.logs=
 async function loadData(){setupSupabase(); if(supabaseClient){let {data:e,error}=await supabaseClient.from('items').select('*').order('code'); if(error) alert(error.message); items=e||[]; let r=await supabaseClient.from('check_logs').select('*').order('checked_at',{ascending:false}).limit(500); logs=r.data||[]}else localLoad(); render(); handleScanParam();}
 async function upsertItems(list){ if(supabaseClient){const {error}=await supabaseClient.from('items').upsert(list,{onConflict:'code'}); if(error) throw error}else{for(const it of list){const i=items.findIndex(x=>x.code===it.code); if(i>=0) items[i]={...items[i],...it,updated_at:new Date().toISOString()}; else items.push({...it,created_at:new Date().toISOString(),updated_at:new Date().toISOString()})} localSave()} await loadData();}
 async function addLog(log){ if(supabaseClient){const {error}=await supabaseClient.from('check_logs').insert(log); if(error) throw error}else{logs.unshift({id:Date.now(),...log,checked_at:new Date().toISOString()}); localSave()} await loadData();}
+async function markUnchecked(code, comment=''){ const checked_by=($('checkerName').value||$('checkerNameScan').value||'').trim(); await addLog({code,checked_by,status:'未チェック',comment:comment||'未チェックに戻しました'}); }
+function isChecked(code){const l=lastLog(code);return !!(l && l.status!=='未チェック')}
+function lastCheckedText(code){const l=lastLog(code); if(!l || l.status==='未チェック') return '<span class="pill warn">未確認</span>'; return esc(new Date(l.checked_at).toLocaleString()+' / '+(l.checked_by||'')+' / '+(l.status||''));}
 function lastLog(code){return logs.filter(l=>l.code===code).sort((a,b)=>String(b.checked_at).localeCompare(String(a.checked_at)))[0]}
-function render(){const q=$('search').value?.toLowerCase()||''; $('itemsTbody').innerHTML=items.filter(it=>[it.code,it.name,it.location].join(' ').toLowerCase().includes(q)).map(it=>{const l=lastLog(it.code);return `<tr><td>${esc(it.code)}</td><td>${esc(it.name)}</td><td>${esc(it.location)}</td><td>${l?esc(new Date(l.checked_at).toLocaleString()+' / '+(l.checked_by||'')):'<span class="pill warn">未確認</span>'}</td><td><button class="ok" onclick="quickCheck('${esc(it.code)}')">チェック</button> <button class="light" onclick="oneLabel('${esc(it.code)}')">QR</button></td></tr>`}).join(''); $('logsTbody').innerHTML=logs.slice(0,120).map(l=>`<tr><td>${esc(new Date(l.checked_at).toLocaleString())}</td><td>${esc(l.code)}</td><td>${esc(l.checked_by)}</td><td>${esc(l.status)}</td><td>${esc(l.comment)}</td></tr>`).join('')}
+function visibleItems(){const q=$('search').value?.toLowerCase()||'';return items.filter(it=>[it.code,it.name,it.location].join(' ').toLowerCase().includes(q))}
+function render(){const vis=visibleItems(); $('itemsTbody').innerHTML=vis.map(it=>{const codeAttr=esc(it.code);return `<tr><td class="checkCell"><input type="checkbox" class="rowSelect" data-code="${codeAttr}" ${selectedCodes.has(it.code)?'checked':''}></td><td>${esc(it.code)}</td><td>${esc(it.name)}</td><td>${esc(it.location)}</td><td>${lastCheckedText(it.code)}</td><td><button class="ok btnCheck" data-code="${codeAttr}">チェック</button> <button class="secondary btnUncheck" data-code="${codeAttr}">未チェックへ戻す</button> <button class="light btnOneLabel" data-code="${codeAttr}">QR</button></td></tr>`}).join(''); $('logsTbody').innerHTML=logs.slice(0,120).map(l=>`<tr><td>${esc(new Date(l.checked_at).toLocaleString())}</td><td>${esc(l.code)}</td><td>${esc(l.checked_by)}</td><td>${esc(l.status)}</td><td>${esc(l.comment)}</td></tr>`).join(''); bindTableButtons()}
+function bindTableButtons(){document.querySelectorAll('.rowSelect').forEach(cb=>cb.onchange=()=>{cb.checked?selectedCodes.add(cb.dataset.code):selectedCodes.delete(cb.dataset.code)});document.querySelectorAll('.btnCheck').forEach(b=>b.onclick=()=>openCheckModal(b.dataset.code));document.querySelectorAll('.btnUncheck').forEach(b=>b.onclick=async()=>{if(confirm('この物品を未チェック状態に戻しますか？\n履歴には「未チェックに戻した」記録が残ります。')){try{await markUnchecked(b.dataset.code)}catch(e){alert(e.message)}}});document.querySelectorAll('.btnOneLabel').forEach(b=>b.onclick=()=>oneLabel(b.dataset.code));}
 $('search').oninput=render;
 $('addItem').onclick=async()=>{const it={code:$('code').value.trim(),name:$('name').value.trim(),location:$('location').value.trim(),note:$('note').value.trim()}; if(!it.code||!it.name)return alert('物品コードと物品名は必須です'); await upsertItems([it]); $('code').value=$('name').value=$('location').value=$('note').value=''}
-window.quickCheck=async code=>{try{await addLog({code,checked_by:$('checkerName').value.trim(),status:'OK',comment:''});}catch(e){alert(e.message)}}
+function openCheckModal(code){modalCode=code;const it=items.find(i=>i.code===code);$('checkModalTitle').textContent='チェック記録：'+(it?`${it.code} ${it.name}`:code);$('modalChecker').value=$('checkerName').value.trim();$('modalStatus').value='OK';$('modalComment').value='';$('checkModalBack').classList.remove('hide')}
+$('modalCancel').onclick=()=>$('checkModalBack').classList.add('hide');
+$('modalSaveCheck').onclick=async()=>{if(!modalCode)return;try{await addLog({code:modalCode,checked_by:$('modalChecker').value.trim(),status:$('modalStatus').value,comment:$('modalComment').value.trim()});localStorage.checkerName=$('modalChecker').value.trim();$('checkerName').value=$('modalChecker').value.trim();$('checkModalBack').classList.add('hide')}catch(e){alert(e.message)}};
+window.quickCheck=code=>openCheckModal(code)
 function normalizeRow(r){const get=(...ks)=>{for(const k of ks){if(r[k]!=null)return r[k]}return ''};return {code:String(get('code','コード','物品コード','品番')).trim(),name:String(get('name','物品名','名称','品名')).trim(),location:String(get('location','設置場所','場所','保管場所')).trim(),note:String(get('note','備考','メモ')).trim()}}
 $('importBtn').onclick=async()=>{const f=$('fileInput').files[0]; if(!f)return alert('ExcelまたはCSVを選んでください'); const buf=await f.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:''}); const list=rows.map(normalizeRow).filter(r=>r.code&&r.name); if(!list.length)return alert('取り込める行がありません'); if(!confirm(`${list.length}件を登録/更新します。よろしいですか？`))return; try{await upsertItems(list);alert('取込完了')}catch(e){alert(e.message)}}
 $('downloadSample').onclick=()=>{const ws=XLSX.utils.json_to_sheet([{code:'A-001',name:'消火器',location:'本館1階 玄関横',note:'2026年点検対象'},{code:'A-002',name:'AED',location:'受付前',note:''}]); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'items'); XLSX.writeFile(wb,'物品名簿_見本.xlsx')}
@@ -99,9 +121,12 @@ $('clearLocal').onclick=()=>{if(confirm('ブラウザ内保存データを削除
 function qrUrl(code){const base=($('appUrl').value.trim()||location.href.split('?')[0]).replace(/[#?].*$/,'');return base+(base.includes('?')?'&':'?')+'code='+encodeURIComponent(code)}
 function qrImageSrc(code){return 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data='+encodeURIComponent(qrUrl(code))}
 async function renderLabels(list){$('qrGrid').innerHTML='';$('labelArea').classList.remove('hide'); for(const it of list){const d=document.createElement('div');d.className='label';d.innerHTML=`<img class="qr" alt="QR ${esc(it.code)}" src="${qrImageSrc(it.code)}"><div class="code">${esc(it.code)}</div><div class="name">${esc(it.name)}</div><div class="loc">${esc(it.location)}</div>`;$('qrGrid').appendChild(d);}}
-$('makeLabels').onclick=()=>renderLabels(items.filter(it=>[it.code,it.name,it.location].join(' ').toLowerCase().includes(($('search').value||'').toLowerCase())));
+$('makeLabels').onclick=()=>renderLabels(visibleItems());
+$('makeSelectedLabels').onclick=()=>{const list=items.filter(i=>selectedCodes.has(i.code)); if(!list.length)return alert('印刷したい物品にチェックを入れてください'); renderLabels(list)};
+$('selectVisible').onclick=()=>{visibleItems().forEach(i=>selectedCodes.add(i.code));render()};
+$('clearSelected').onclick=()=>{selectedCodes.clear();render()};
 window.oneLabel=code=>renderLabels(items.filter(i=>i.code===code));
-function handleScanParam(){const code=new URLSearchParams(location.search).get('code'); if(!code)return; $('scanPanel').classList.remove('hide'); const it=items.find(x=>x.code===code); $('scanItemInfo').innerHTML=it?`<b>${esc(it.code)}</b><br>${esc(it.name)}<br>${esc(it.location||'')}`:`<span style="color:#b42318">物品コード ${esc(code)} が名簿にありません</span>`; $('checkBtn').disabled=!it; $('checkBtn').onclick=async()=>{try{await addLog({code,checked_by:$('checkerNameScan').value.trim(),status:$('statusScan').value,comment:$('commentScan').value.trim()}); localStorage.checkerName=$('checkerNameScan').value.trim(); alert('チェックを記録しました')}catch(e){alert(e.message)}}}
+function handleScanParam(){const code=new URLSearchParams(location.search).get('code'); if(!code)return; $('scanPanel').classList.remove('hide'); const it=items.find(x=>x.code===code); const l=lastLog(code); $('scanItemInfo').innerHTML=it?`<b>${esc(it.code)}</b><br>${esc(it.name)}<br>${esc(it.location||'')}<br><span class="muted">現在：${isChecked(code)?'チェック済み':'未チェック'}</span>`:`<span style="color:#b42318">物品コード ${esc(code)} が名簿にありません</span>`; $('checkBtn').disabled=!it; $('uncheckBtn').disabled=!it; $('checkBtn').onclick=async()=>{try{await addLog({code,checked_by:$('checkerNameScan').value.trim(),status:$('statusScan').value,comment:$('commentScan').value.trim()}); localStorage.checkerName=$('checkerNameScan').value.trim(); alert('チェックを記録しました')}catch(e){alert(e.message)}}; $('uncheckBtn').onclick=async()=>{if(!confirm('この物品を未チェック状態に戻しますか？'))return;try{await addLog({code,checked_by:$('checkerNameScan').value.trim(),status:'未チェック',comment:$('commentScan').value.trim()||'未チェックに戻しました'}); localStorage.checkerName=$('checkerNameScan').value.trim(); alert('未チェック状態に戻しました')}catch(e){alert(e.message)}}}
 $('reloadData').onclick=loadData;
 loadSettings(); loadData();
 </script>
